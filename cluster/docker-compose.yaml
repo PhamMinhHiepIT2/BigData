@@ -6,8 +6,8 @@ services:
       - "9990:8080"
       - "7077:7077"
     volumes:
-      - ./apps:/opt/spark-apps
-      - ./data:/opt/spark-data
+      - ./volume_mount/apps:/opt/spark-apps
+      - ./volume_mount/data:/opt/spark-data
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
@@ -83,7 +83,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data01:/usr/share/elasticsearch/data
+      - volume_mount/data01:/usr/share/elasticsearch/data
     ports:
       - 8900:9200
     networks:
@@ -104,7 +104,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data02:/usr/share/elasticsearch/data
+      - volume_mount/data02:/usr/share/elasticsearch/data
     networks:
       - elastic
 
@@ -123,9 +123,26 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data03:/usr/share/elasticsearch/data
+      - volume_mount/data03:/usr/share/elasticsearch/data
     networks:
       - elastic
+
+  logstash:
+    image: logstash:7.16.2
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elastic
+    depends_on:
+      - es01, es02
 
   kib01:
     image: docker.elastic.co/kibana/kibana:7.16.2
