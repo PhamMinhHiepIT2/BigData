@@ -17,3 +17,7 @@ def main():
         # publish data to rabbitmq queue
         for product in product_list:
             publish(json.dumps(product))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,2 +1,4 @@
 crawler/data/*
 **/__pycache__/**
+crawler/__pycache__/*
+crawler/.ipynb_checkpoints/*
