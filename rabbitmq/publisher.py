@@ -1,6 +1,6 @@
 import pika
 
-from config import (
+from rabbitmq.config import (
     HOST,
     PORT,
     EXCHANGE,

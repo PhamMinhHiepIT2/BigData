@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 
-from config import HOST, PORT
+from elasticSearch.config import HOST, PORT
 
 
 es_host = [{"host": HOST, "port": PORT}]

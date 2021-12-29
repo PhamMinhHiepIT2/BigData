@@ -3,7 +3,7 @@ import json
 
 from elasticSearch.push_data import ElasticSearch
 
-from config import (
+from rabbitmq.config import (
     HOST,
     PORT,
     ROUTING_KEY,

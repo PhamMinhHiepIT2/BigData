@@ -1,16 +1,8 @@
 import requests
 import json
-import csv
 
-url = "https://tiki.vn/api/v2/products?limit=48&include=advertisement&aggregations=1&category={}&page={}"
-product_url = "https://tiki.vn/api/v2/products/{}"
 
-product_id_file = "./data/product-id.txt"
-product_data_file = "./data/product.txt"
-product_file = "./data/product.csv"
-
-headers = {
-    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"}
+from crawler.config import HEADER, URL, PRODUCT_URL
 
 
 def crawl_product_id(category: int):
@@ -18,8 +10,8 @@ def crawl_product_id(category: int):
     i = 1
     while (True):
         print("Crawl page: ", i)
-        print(url.format(category, i))
-        response = requests.get(url.format(category, i), headers=headers)
+        print(URL.format(category, i))
+        response = requests.get(URL.format(category, i), headers=HEADER)
 
         if (response.status_code != 200):
             break
@@ -37,18 +29,10 @@ def crawl_product_id(category: int):
     return product_list, i
 
 
-def save_product_id(product_list=[]):
-    file = open(product_id_file, "w+")
-    str = "\n".join(product_list)
-    file.write(str)
-    file.close()
-    print("Save file: ", product_id_file)
-
-
 def crawl_product(product_list=[]):
     product_detail_list = []
     for product_id in product_list:
-        response = requests.get(product_url.format(product_id), headers=headers)
+        response = requests.get(PRODUCT_URL.format(product_id), headers=HEADER)
         if (response.status_code == 200):
             product_detail_list.append(response.text)
     return product_detail_list
@@ -67,38 +51,10 @@ def adjust_product(product):
 
     for field in flatten_field:
         if field in e:
-            e[field] = json.dumps(e[field], ensure_ascii=False).replace('\n', '')
-
+            e[field] = json.dumps(
+                e[field],
+                ensure_ascii=False).replace('\n', '')
     return e
-
-
-def save_raw_product(product_detail_list=[]):
-    file = open(product_data_file, "w+")
-    str = "\n".join(product_detail_list)
-    file.write(str)
-    file.close()
-    print("Save file: ", product_data_file)
-
-
-def load_raw_product():
-    file = open(product_data_file, "r")
-    return file.readlines()
-
-
-def save_product_list(product_json_list, product_file: str):
-    file = open(product_file, "w")
-    csv_writer = csv.writer(file)
-
-    count = 0
-    for p in product_json_list:
-        if p is not None:
-            if count == 0:
-                header = p.keys()
-                csv_writer.writerow(header)
-                count += 1
-            csv_writer.writerow(p.values())
-    file.close()
-    print("Save file: ", product_file)
 
 
 def crawler(category: int):
