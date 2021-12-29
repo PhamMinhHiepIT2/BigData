@@ -101,17 +101,12 @@ def save_product_list(product_json_list, product_file: str):
     print("Save file: ", product_file)
 
 
-for category in range(100, 200):
-    product_file = "./data/product_{}.csv".format(category)
+def crawler(category: int):
     product_list, page = crawl_product_id(category)
-
     print("No. Page: ", page)
     print("No. Product ID: ", len(product_list))
-
     # crawl detail for each product id
     product_list = crawl_product(product_list)
-
     # flatten detail before converting to csv
     product_json_list = [adjust_product(p) for p in product_list]
-    # save product to csv
-    save_product_list(product_json_list, product_file)
+    return product_json_list

@@ -1,10 +1,20 @@
 import pika
 import json
 
-from config import HOST, PORT, ROUTING_KEY, ES_INDEX
 from elasticSearch.push_data import ElasticSearch
 
+from config import (
+    HOST,
+    PORT,
+    ROUTING_KEY,
+    ES_INDEX,
+    RABBITMQ_USER,
+    RABBITMQ_PASS
+)
+
+
 id = 1
+HEARTBEAT = 3600
 
 
 def callback(channel, method, properties, body):
@@ -28,8 +38,14 @@ def consume():
     """
     Subcribe to RabbitMQ queue to get message from queue
     """
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=HOST, port=PORT))
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+    params = pika.ConnectionParameters(
+        host=HOST,
+        port=PORT,
+        credentials=credentials,
+        virtual_host="/",
+        heartbeat=HEARTBEAT)
+    connection = pika.BlockingConnection(parameters=params)
     channel = connection.channel()
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(

@@ -1,5 +1,7 @@
 HOST = '13.67.92.248'
-PORT = 5672
+PORT = 5673
 EXCHANGE = ''
 ROUTING_KEY = 'bigdata'
 ES_INDEX = 'H2Q_bigdata'
+RABBITMQ_USER = 'guest'
+RABBITMQ_PASS = 'guest'
