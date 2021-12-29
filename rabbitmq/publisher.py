@@ -30,5 +30,5 @@ def publish(msg):
         exchange=EXCHANGE,
         routing_key=ROUTING_KEY,
         body=msg,
-        delivery_mode=2)
+    )
     channel.close()
