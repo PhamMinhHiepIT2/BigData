@@ -2,7 +2,7 @@ import requests
 import json
 import csv
 
-laptop_page_url = "https://tiki.vn/api/v2/products?limit=48&include=advertisement&aggregations=1&category=8095&page={}&urlKey=laptop"
+url = "https://tiki.vn/api/v2/products?limit=48&include=advertisement&aggregations=1&category={}&page={}"
 product_url = "https://tiki.vn/api/v2/products/{}"
 
 product_id_file = "./data/product-id.txt"
@@ -13,13 +13,13 @@ headers = {
     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"}
 
 
-def crawl_product_id():
+def crawl_product_id(category: int):
     product_list = []
     i = 1
     while (True):
         print("Crawl page: ", i)
-        print(laptop_page_url.format(i))
-        response = requests.get(laptop_page_url.format(i), headers=headers)
+        print(url.format(category, i))
+        response = requests.get(url.format(category, i), headers=headers)
 
         if (response.status_code != 200):
             break
@@ -31,9 +31,7 @@ def crawl_product_id():
 
         for product in products:
             product_id = str(product["id"])
-            print("Product ID: ", product_id)
             product_list.append(product_id)
-
         i += 1
 
     return product_list, i
@@ -53,7 +51,6 @@ def crawl_product(product_list=[]):
         response = requests.get(product_url.format(product_id), headers=headers)
         if (response.status_code == 200):
             product_detail_list.append(response.text)
-            print("Crawl product: ", product_id, ": ", response.status_code)
     return product_detail_list
 
 
@@ -88,7 +85,7 @@ def load_raw_product():
     return file.readlines()
 
 
-def save_product_list(product_json_list):
+def save_product_list(product_json_list, product_file: str):
     file = open(product_file, "w")
     csv_writer = csv.writer(file)
 
@@ -104,23 +101,17 @@ def save_product_list(product_json_list):
     print("Save file: ", product_file)
 
 
-# crawl product id
-product_list, page = crawl_product_id()
+for category in range(100, 200):
+    product_file = "./data/product_{}.csv".format(category)
+    product_list, page = crawl_product_id(category)
 
-print("No. Page: ", page)
-print("No. Product ID: ", len(product_list))
+    print("No. Page: ", page)
+    print("No. Product ID: ", len(product_list))
 
-# save product id for backup
-save_product_id(product_list)
+    # crawl detail for each product id
+    product_list = crawl_product(product_list)
 
-# crawl detail for each product id
-product_list = crawl_product(product_list)
-
-# save product detail for backup
-save_raw_product(product_list)
-
-# product_list = load_raw_product()
-# flatten detail before converting to csv
-product_json_list = [adjust_product(p) for p in product_list]
-# save product to csv
-save_product_list(product_json_list)
+    # flatten detail before converting to csv
+    product_json_list = [adjust_product(p) for p in product_list]
+    # save product to csv
+    save_product_list(product_json_list, product_file)
