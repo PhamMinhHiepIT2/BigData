@@ -127,23 +127,6 @@ services:
     networks:
       - elastic
 
-  logstash:
-    image: logstash:7.16.2
-    volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
-    ports:
-      - "5044:5044"
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elastic
-    depends_on:
-      - es01, es02, es03
-
   kib01:
     image: docker.elastic.co/kibana/kibana:7.16.2
     container_name: kib01
