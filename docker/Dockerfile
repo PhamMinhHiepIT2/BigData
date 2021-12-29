@@ -8,7 +8,7 @@ RUN apt update && apt install python3-pip -y \
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN pip3 install /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt
 
 COPY . .
 
