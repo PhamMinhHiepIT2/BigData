@@ -25,8 +25,8 @@ def save_product_id():
 
 def main():
     with ProcessPoolExecutor(max_workers=3) as pool:
-        p1 = pool.submit(save_product_id, )
-        p2 = pool.submit(consume, )
+        pool.submit(save_product_id, )
+        pool.submit(consume, )
 
 
 if __name__ == '__main__':

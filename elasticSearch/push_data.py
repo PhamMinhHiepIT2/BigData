@@ -22,3 +22,4 @@ class ElasticSearch:
         """
         es = Elasticsearch(self.host)
         es.index(index=index, id=id, msg=msg)
+        print("Pushed message: {}".format(msg))
