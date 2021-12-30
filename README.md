@@ -1,10 +1,9 @@
 # BigData
-This repository purposes to host spark cluster, elasticsearch, rabbitmq, kibana
-
+This repository purposes to create data pipeline 
 **Data Pipeline**
 ![Data Pipeline](docs/images/Data_Pipeline.jpg)
 
-**Build cluster**
+**Build cluster**<br>
 ***1. Build Spark docker image***
 ```bash
 docker build -t cluster-apache-spark:3.0.2 -f cluster/Dockerfile .
@@ -17,6 +16,11 @@ docker-compose up -d
 **Build Docker image**
 ```bash
 docker build -t bigdata -f docker/Dockerfile .
+```
+
+**Install requirements**
+```bash
+pip3 install -r requirements.txt
 ```
 
 **Local testing**

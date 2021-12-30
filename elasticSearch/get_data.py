@@ -8,19 +8,19 @@ es = Elasticsearch(host=HOST, port=PORT)
 # hardcode for elasticsearch index
 es_index = "_".join([ES_INDEX, "30122021"])
 
+# query: The elasticsearch query.
+query = {
+    "query": {
+        "bool": {
+            "filter": []
+        }
+    },
+    "fields": ["name", "id"],
+    "_source": False
+}
 
-def get_data_from_elastic():
-    # query: The elasticsearch query.
-    query = {
-        "query": {
-            "bool": {
-                "filter": []
-            }
-        },
-        "fields": ["name"],
-        "_source": False
-    }
 
+def get_data_from_elastic(query):
     # Scan function to get all the data.
     rel = scan(client=es,
                query=query,
@@ -35,20 +35,22 @@ def get_data_from_elastic():
     return result
 
 
-def get_product_name():
+def get_product_id_and_name(query=query):
     """
-    Get all product names from elasticsearch data
+    Get all product ids and product names from elasticsearch data
 
     Returns:
-        List name of products
+        List mapping id and name of product
     """
     res = []
-    es_data = get_data_from_elastic()
+    es_data = get_data_from_elastic(query)
     for hit in es_data:
         try:
-            product_name = hit['fields']['name'][0]
-            res.append(product_name)
+            # get product name and lowercase it
+            product_name = str(hit['fields']['name'][0])
+            product_name = product_name.lower().split(" ")
+            product_id = hit['fields']['id'][0]
+            res.append((product_id, product_name))
         except Exception as e:
             print(e)
-
-    return product_name
+    return res
