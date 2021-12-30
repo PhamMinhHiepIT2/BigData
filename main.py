@@ -16,7 +16,7 @@ def save_product_id():
     """
     # crawl product id from tiki
     for category in range(MIN_CATEGORY, MAX_CATEGORY, CRAWL_STEP):
-        product_ids = crawl_product_id(category)
+        product_ids, _ = crawl_product_id(category)
         # publish product id to rabbitmq queue
         for product in product_ids:
             publish(product)
@@ -25,8 +25,8 @@ def save_product_id():
 
 def main():
     with ProcessPoolExecutor(max_workers=3) as pool:
-        pool.submit(save_product_id, )
-        pool.submit(consume, )
+        p1 = pool.submit(save_product_id, )
+        p2 = pool.submit(consume, )
 
 
 if __name__ == '__main__':
