@@ -16,10 +16,9 @@ class ElasticSearch:
         Push message to elasticsearch
 
         Args:
-            index ([type]): index name
+            index ([int]): index name
             id : id of message in index
             msg : message
         """
         es = Elasticsearch(self.host)
-        es.index(index=index, id=id, msg=msg)
-        print("Pushed message: {}".format(msg))
+        es.index(index=index, id=id, body=msg)

@@ -9,8 +9,6 @@ def crawl_product_id(category: int):
     product_list = []
     i = 1
     while (True):
-        print("Crawl page: ", i)
-        print(URL.format(category, i))
         response = requests.get(URL.format(category, i), headers=HEADER)
 
         if (response.status_code != 200):
@@ -25,7 +23,7 @@ def crawl_product_id(category: int):
             product_id = str(product["id"])
             product_list.append(product_id)
         i += 1
-
+    print("Number product ids: {}".format(len(product_list)))
     return product_list, i
 
 
@@ -57,7 +55,7 @@ def adjust_product(product):
     return e
 
 
-def crawl_product_by_id(product_id: int) -> json:
+def crawl_product_by_id(product_id):
     """
     Crawl product detail by product id
 
@@ -67,7 +65,8 @@ def crawl_product_by_id(product_id: int) -> json:
     Returns:
         json: product detail in json format
     """
-    response = requests.get(PRODUCT_URL.format(product_id), headers=HEADER)
+    url = PRODUCT_URL.format(product_id)
+    response = requests.get(url, headers=HEADER)
     if response.status_code != 200:
         print("Fail to crawl product id: {}".format(product_id))
         return -1

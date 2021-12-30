@@ -19,14 +19,16 @@ def save_product_id():
         product_ids, _ = crawl_product_id(category)
         # publish product id to rabbitmq queue
         for product in product_ids:
-            publish(product)
+            publish(str(product))
     print("Completely crawl product id and publish to rabbitmq queue!!!")
 
 
 def main():
     with ProcessPoolExecutor(max_workers=3) as pool:
-        pool.submit(save_product_id, )
-        pool.submit(consume, )
+        saving_state = pool.submit(save_product_id, )
+        consuming_state = pool.submit(consume, )
+        if saving_state is None or consuming_state is None:
+            raise Exception("Fail to consuming data from rabbitmq queue")
 
 
 if __name__ == '__main__':
