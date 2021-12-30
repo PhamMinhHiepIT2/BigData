@@ -2,6 +2,7 @@ import pika
 import json
 
 from elasticSearch.push_data import ElasticSearch
+from crawler.app import crawl_product_by_id
 
 from rabbitmq.config import (
     HOST,
@@ -22,7 +23,10 @@ def callback(channel, method, properties, body):
     Receive message from queue and push message to elasticsearch
     """
     global id
-    msg = json.loads(body)
+    product_id = body
+    product_detail = crawl_product_by_id(product_id)
+    msg = json.dumps(product_detail)
+
     es = ElasticSearch()
     es.push_msg(
         index=ES_INDEX,

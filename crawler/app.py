@@ -57,6 +57,25 @@ def adjust_product(product):
     return e
 
 
+def crawl_product_by_id(product_id: int) -> json:
+    """
+    Crawl product detail by product id
+
+    Args:
+        product_id : id of product
+
+    Returns:
+        json: product detail in json format
+    """
+    response = requests.get(PRODUCT_URL.format(product_id), headers=HEADER)
+    if response.status_code != 200:
+        print("Fail to crawl product id: {}".format(product_id))
+        return -1
+    # convert product detail in text format to json format
+    product_detail = adjust_product(response.text)
+    return product_detail
+
+
 def crawler(category: int):
     product_list, page = crawl_product_id(category)
     print("No. Page: ", page)
