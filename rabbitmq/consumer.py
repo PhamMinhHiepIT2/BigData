@@ -36,6 +36,7 @@ def callback(channel, method, properties, body):
         id=id,
         msg=msg
     )
+    print("Pushed message index {}".format(id))
     id += 1
     # pop message out of queue
     channel.basic_ack(delivery_tag=method.delivery_tag)
