@@ -25,11 +25,12 @@ def save_product_id():
 
 def main():
     with ProcessPoolExecutor(max_workers=3) as pool:
-        saving_state = pool.submit(save_product_id, ).result()
-        consuming_state = pool.submit(consume, ).result()
-        if saving_state is not None or consuming_state is not None:
+        saving_state = pool.submit(save_product_id, )
+        consuming_state = pool.submit(consume, )
+        if saving_state.result() is not None or consuming_state.result() is not None:
             raise Exception("Fail to consuming data from rabbitmq queue")
 
 
 if __name__ == '__main__':
     main()
+    # consume()
