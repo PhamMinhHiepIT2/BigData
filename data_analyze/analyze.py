@@ -10,11 +10,16 @@ from elasticSearch.get_data import get_product_id_and_name
 spark = SparkSession \
     .builder \
     .appName('BigData') \
-    .master('spark://13.67.92.248:7077') \
     .getOrCreate()
 
 
-def process_data():
+def write_data_to_parquet(parquet_file: str):
     data = get_product_id_and_name()
     col = ['id', 'name']
     df = pd.DataFrame(data, columns=col)
+    df.to_parquet(parquet_file)
+
+
+a = spark.read.csv(
+    '/Users/admin/Development/Dev/BigData/BigData/crawler/data/product.csv')
+print(a)
