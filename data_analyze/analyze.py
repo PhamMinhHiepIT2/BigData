@@ -45,8 +45,8 @@ def analyze_data(data):
                         inputCol='name', outputCol='features')
     model = word2Vec.fit(data)
     result = model.transform(data)
-    kmeans = KMeans(k=10)
-    kmean_model = kmeans.fit(result)
+    kmeans = KMeans(k=10).setSeed(1)
+    kmean_model = kmeans.fit(result.select('features'))
     data_transformed = kmean_model.transform(result)
     return data_transformed
 
