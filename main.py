@@ -28,7 +28,7 @@ def main():
         saving_state = pool.submit(save_product_id, )
         consuming_state = pool.submit(consume, )
         if saving_state.result() is not None or consuming_state.result() is not None:
-            raise Exception("Fail to consuming data from rabbitmq queue")
+            print("Fail to consuming data from rabbitmq queue")
 
 
 if __name__ == '__main__':
