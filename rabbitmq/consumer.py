@@ -8,7 +8,7 @@ from rabbitmq.config import (
     HOST,
     PORT,
     ROUTING_KEY,
-    ES_INDEX,
+    ES_INDEX_PATTERN,
     RABBITMQ_USER,
     RABBITMQ_PASS,
     DATE_FORMAT
@@ -30,7 +30,7 @@ def callback(channel, method, properties, body):
     msg = json.dumps(product_detail)
     es = ElasticSearch()
     # elasticsearch index in each day
-    es_index = "_".join([ES_INDEX, today.strftime(DATE_FORMAT)])
+    es_index = "_".join([ES_INDEX_PATTERN, today.strftime(DATE_FORMAT)])
     es.push_msg(
         index=es_index,
         id=id,

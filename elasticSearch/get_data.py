@@ -1,12 +1,11 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
-import pandas as pd
 
-from elasticSearch.config import HOST, PORT, ES_INDEX
+
+from elasticSearch.config import HOST, PORT, ES_INDEX_PATTERN
 
 es = Elasticsearch(host=HOST, port=PORT)
-# hardcode for elasticsearch index
-es_index = "_".join([ES_INDEX, "30122021"])
+
 
 # query: The elasticsearch query.
 query = {
@@ -20,7 +19,24 @@ query = {
 }
 
 
-def get_data_from_elastic(query):
+def get_elasticsearch_indices():
+    """
+    Get all indices of elasticsearch
+    """
+    return list(es.indices.get_alias('*'))
+
+
+def scan_es_data(es_index, query):
+    """
+    Scan data from a index
+
+    Args:
+        es_index ([str]): elasticsearch index name
+        query ([dict]): elasticsearch query
+
+    Returns:
+        [List]: data from elasticsearch index
+    """
     # Scan function to get all the data.
     rel = scan(client=es,
                query=query,
@@ -33,6 +49,25 @@ def get_data_from_elastic(query):
     # Keep response in a list.
     result = list(rel)
     return result
+
+
+def get_data_from_elastic(query):
+    """
+    Get data from index pattern
+
+    Args:
+        query : elasticsearch query
+
+    Returns:
+        [List]: Data from elasticsearch index pattern
+    """
+    data = []
+    es_indices = get_elasticsearch_indices()
+    for index in es_indices:
+        if ES_INDEX_PATTERN in index:
+            index_data = scan_es_data(index, query)
+            data.extend(index_data)
+    return data
 
 
 def get_product_id_and_name(query=query):
