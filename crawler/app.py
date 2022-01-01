@@ -5,7 +5,7 @@ import json
 from crawler.config import HEADER, URL, PRODUCT_URL
 
 
-def crawl_product_id(category: int):
+def crawl_product_id(category):
     product_list = []
     i = 1
     while (True):
@@ -75,7 +75,7 @@ def crawl_product_by_id(product_id):
     return product_detail
 
 
-def crawler(category: int):
+def crawler(category):
     product_list, page = crawl_product_id(category)
     print("No. Page: ", page)
     print("No. Product ID: ", len(product_list))
