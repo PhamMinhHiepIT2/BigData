@@ -51,9 +51,10 @@ def submit_job():
     transformed_data = transformed_data.withColumn(
         'name',
         concat_ws(" ", "name"))
-    df = transformed_data.toPandas()
-    # save data transformed to parquet file
-    df.to_parquet(save_transformed_data)
+    transformed_data.write.parquet(save_transformed_data)
+    # df = transformed_data.toPandas()
+    # # save data transformed to parquet file
+    # df.to_parquet(save_transformed_data)
 
 
 if __name__ == '__main__':
