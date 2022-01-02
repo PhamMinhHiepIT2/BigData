@@ -41,16 +41,20 @@ def analyze_data(data):
     return data_transformed
 
 
-if __name__ == '__main__':
-    save_data_crawled = "crawler/data/data_crawled.parquet"
-    save_transformed_data = "crawler/data/transformed_data.parquet"
+def submit_job():
+    data_crawled = "/opt/spark-apps/data_crawled.parquet"
+    save_transformed_data = "/opt/spark-apps/transformed_data.parquet"
     # pre-process crawled data
-    processed_data = process_data(save_data_crawled)
+    processed_data = process_data(data_crawled)
     # clustering
-    transformed_data = analyze_data(process_data)
+    transformed_data = analyze_data(processed_data)
     transformed_data = transformed_data.withColumn(
         'name',
         concat_ws(" ", "name"))
     df = transformed_data.toPandas()
     # save data transformed to parquet file
     df.to_parquet(save_transformed_data)
+
+
+if __name__ == '__main__':
+    submit_job()
