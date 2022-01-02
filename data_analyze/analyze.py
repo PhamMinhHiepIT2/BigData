@@ -1,23 +1,13 @@
-import pandas as pd
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import lower, col, split, concat_ws, transform
+from pyspark.sql.functions import lower, col, split, concat_ws
 from pyspark.ml.feature import Word2Vec
 from pyspark.ml.clustering import KMeans
-
-from elasticSearch.get_data import get_product_id_and_name
 
 
 spark = SparkSession \
     .builder \
     .appName('BigData') \
     .getOrCreate()
-
-
-def write_crawled_data_to_parquet(parquet_file: str):
-    data = get_product_id_and_name()
-    col = ['id', 'name']
-    df = pd.DataFrame(data, columns=col)
-    df.to_parquet(parquet_file)
 
 
 def process_data(parquet_file: str):
@@ -54,8 +44,6 @@ def analyze_data(data):
 if __name__ == '__main__':
     save_data_crawled = "crawler/data/data_crawled.parquet"
     save_transformed_data = "crawler/data/transformed_data.parquet"
-    # save crawled data to parquet file
-    write_crawled_data_to_parquet(save_data_crawled)
     # pre-process crawled data
     processed_data = process_data(save_data_crawled)
     # clustering
